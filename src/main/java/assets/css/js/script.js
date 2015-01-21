@@ -4,7 +4,21 @@ $(document).ready(function(){
         //$("#countLen").text($(this).val().length);
 
     });
+
 });
+
+
+/*$("#c1").fadeIn('slow', function(){
+$(this).animate({'bottom': '-=50px'}, 'slow')});
+$("#c2").fadeIn('slow', function(){
+$(this).animate({'bottom': '-=50px'}, 'slow')});
+$("#c3").fadeIn('slow', function(){
+$(this).animate({'bottom': '-=50px'}, 'slow')});
+$("#c4").fadeIn('slow', function(){
+$(this).animate({'bottom': '-=50px'}, 'slow')});
+$("#c5").fadeIn('slow', function(){
+$(this).animate({'bottom': '-=50px'}, 'slow')});*/
+
 
 function strength(pass)
 {

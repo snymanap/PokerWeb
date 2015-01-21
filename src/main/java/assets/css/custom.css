@@ -5,4 +5,16 @@ body {
 
 }
 
+.img_item{
+
+   position: absolute;
+
+   right: 0px;
+
+   opacity:0;
+
+   top :0;
+
+}
+
 

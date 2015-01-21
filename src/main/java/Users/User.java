@@ -2,6 +2,7 @@ package Users;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
 /**
@@ -15,6 +16,8 @@ public class User {
     @Size(max = 12)
     private String username;
     private String password;
+
+
 
     public User(){}
 

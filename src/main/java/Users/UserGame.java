@@ -2,8 +2,10 @@ package Users;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Andre on 2015-01-20.
@@ -21,19 +23,19 @@ public class UserGame implements Serializable{
 
     public UserGame(){}
 
-    public void setUsername(String u)
+    public void addUsername(String u)
     {
-        this.username = u;
+        username = u;
     }
 
-    public String getUsername()
+    public String getUsernames()
     {
         return username;
     }
 
     public void setGameName(String s)
     {
-        this.gameName = s;
+        gameName = s;
     }
 
     public String getGameName()

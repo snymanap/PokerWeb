@@ -16,7 +16,10 @@
 
 package controllers;
 
+import Users.Game;
 import Users.User;
+import Users.UserGame;
+import cards.Hand;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import ninja.Result;
@@ -32,6 +35,8 @@ import services.RegisterService;
 import services.loginService;
 
 import java.lang.Object;
+import java.util.Date;
+import java.util.List;
 import javax.swing.Popup;
 
 import ninja.Context;
@@ -49,8 +54,19 @@ public class ApplicationController {
     @Inject private MultiplayerService multiplayerService;
 
 
+
     public Result multiplayer(){
         Result result = Results.html();
+
+        //Game game = new Game();
+        //game.setGameName("Lekker game");
+        //game.setGameDate(new Date());
+
+        //UserGame u = new UserGame();
+
+
+        //multiplayerService.gameStore(game);
+
         pokerService.createDeck();
         result.render("handDeal1", pokerService.test());
         result.render("handDeal2", pokerService.test());
@@ -104,11 +120,24 @@ public class ApplicationController {
         logged = names;
 
 
+        List<Hand> hand = pokerService.getHandList();
+
+
+
         result.render("register", "Hello " + context.getSession().get("username"));
         result.render("name", pokerService.test());
+
+        result.render("card1", pokerService.convert(pokerService.getHand().get(0)));
+        result.render("card2", pokerService.convert(pokerService.getHand().get(1)));
+        result.render("card3", pokerService.convert(pokerService.getHand().get(2)));
+        result.render("card4", pokerService.convert(pokerService.getHand().get(3)));
+        result.render("card5", pokerService.convert(pokerService.getHand().get(4)));
         return result;
 
     }
+
+
+
     private String logged = "";
     Context c = null;
     public Result login()
