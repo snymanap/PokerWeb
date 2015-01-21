@@ -16,7 +16,7 @@ public class Game {
     private String gameName;
 
 
-
+    private String yes;
     @Temporal(TemporalType.TIMESTAMP)
     private Date gameDate;
 
