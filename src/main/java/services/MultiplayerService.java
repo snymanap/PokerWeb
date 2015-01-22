@@ -2,6 +2,7 @@ package services;
 
 import Users.Game;
 import Users.User;
+import Users.UserGame;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -22,14 +23,37 @@ import java.util.List;
 public class MultiplayerService {
     @Inject
     private Provider<EntityManager> entityManagerProvider;
+
     @Transactional
     public boolean gameStore(Game game) {
         EntityManager entityManager = entityManagerProvider.get();
 
         entityManager.persist(game);
+        //entityManager.flush();
+
         return true;
 
     }
+
+    @Transactional
+    public boolean usergameStore(UserGame game) {
+        EntityManager entityManager = entityManagerProvider.get();
+
+        entityManager.persist(game);
+        //entityManager.flush();
+
+        return true;
+
+    }
+
+    /*@Transactional
+    public boolean userGameStore(UserGame userGame)
+    {
+        EntityManager entityManager = entityManagerProvider.get();
+
+        entityManager.persist(userGame);
+        return true;
+    }*/
 
     @UnitOfWork
     public void getAllGames(){

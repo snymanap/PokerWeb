@@ -62,17 +62,29 @@ public class RegisterService {
 
     }
 
+    @Transactional
+    public void store(Object o)
+    {
+        EntityManager entityManager = entityManagerProvider.get();
+
+        entityManager.persist(o);
+
+    }
+
     @UnitOfWork
-    public void getAllUsers(){
+    public List<User> getAllUsers(){
         EntityManager entityManager = entityManagerProvider.get();
         String out = "";
         Query q = entityManager.createQuery("SELECT x FROM User x");
 
         List<User> users = (List<User>) q.getResultList();
-        if (users != null)
-            for (int i = 0; i < users.size(); i++)
-                System.out.println(users.get(i).getUsername());
+        //if (users != null) {
+            //for (int i = 0; i < users.size(); i++)
+            return users;    //System.out.println(users.get(i).getUsername());
+
+
         //return "No users";
+
     }
 
     @UnitOfWork
@@ -91,5 +103,7 @@ public class RegisterService {
             System.out.println(users.get(i).getUsername());
         return true;
     }
+
+
 
 }

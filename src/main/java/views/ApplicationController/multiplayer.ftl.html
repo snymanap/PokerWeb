@@ -1,3 +1,5 @@
+<#import "../layout/defaultLayout.ftl.html" as layout>
+    <@layout.myLayout "Home page">
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -5,13 +7,14 @@
     <title></title>
 </head>
 <body>
-<h2>Lewe</h2>
+<h2>Mutiplayer</h2>
 
-<div> Dihan ${handDeal1}</div>
-<div> Chris ${handDeal2}</div>
-<div> Arno ${handDeal3}</div>
-<div> Hardu ${handDeal4}</div>
-<div> Andre ${handDeal5}</div>
+<div> User1 ${handDeal1}</div>
+<div> User2 ${handDeal2}</div>
+<div> User3 ${handDeal3}</div>
+<div> User4 ${handDeal4}</div>
+<div> User5 ${handDeal5}</div>
 <div> Winner:  ${winning}</div>
 </body>
 </html>
+</@layout.myLayout>

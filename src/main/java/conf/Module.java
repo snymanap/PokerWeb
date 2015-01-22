@@ -25,6 +25,8 @@ import services.RegisterService;
 import services.loginService;
 
 import javax.mail.Session;
+import javax.persistence.EntityManager;
+import com.google.inject.Provider;
 
 @Singleton
 public class Module extends AbstractModule {

@@ -211,7 +211,7 @@ public class PokerService
         if (card.toString().compareTo("K♦") == 0)
             return "king_of_diamonds2";
         if (card.toString().compareTo("A♦") == 0)
-            return "ace_of_diamonds2";
+            return "ace_of_diamonds";
         if (card.toString().compareTo("2♥") == 0)
             return "2_of_hearts";
         if (card.toString().compareTo("3♥") == 0)

@@ -58,14 +58,31 @@ public class ApplicationController {
     public Result multiplayer(){
         Result result = Results.html();
 
-        //Game game = new Game();
-        //game.setGameName("Lekker game");
-        //game.setGameDate(new Date());
+        /*Game game = new Game();
+        game.setGameDate(new Date());
+        game.setGameName("lekkergame");
 
-        //UserGame u = new UserGame();
+        User user = new User();
+        user.setPassword("123");
+        user.setUsername("Arno");
+        pokerService.createDeck();
+
+        UserGame userGame = new UserGame();
+        userGame.setUsername(user.getUsername());
+        userGame.setGameName(game.getGameName());
+        userGame.setHand("3♠,4♠,5♠,6♠,7♠");
+
+        user.addGame(game);
+        userGame.setUser(user);
+        game.addUser(user);
+        userGame.setGame(game);
+
+        multiplayerService.gameStore(game);
+
+        multiplayerService.usergameStore(userGame);
+        List<User> users = registerService.getAllUsers();*/
 
 
-        //multiplayerService.gameStore(game);
 
         pokerService.createDeck();
         result.render("handDeal1", pokerService.test());
@@ -73,6 +90,16 @@ public class ApplicationController {
         result.render("handDeal3", pokerService.test());
         result.render("handDeal4", pokerService.test());
         result.render("handDeal5", pokerService.test());
+        /*String u1 = "";
+        String u2 = "";
+        String u3 = "";
+        String u4 = "";
+        String u5 = "";
+        result.render("user1", users.get(0));
+        result.render("user2", users.get(1));
+        result.render("user3", users.get(2));
+        result.render("user4", users.get(3));
+        result.render("user5", users.get(4));*/
         result.render("winning", pokerService.evalHands());
         return result;
     }
@@ -119,7 +146,7 @@ public class ApplicationController {
         c = context;
         logged = names;
 
-
+        pokerService.createDeck();
         List<Hand> hand = pokerService.getHandList();
 
 
