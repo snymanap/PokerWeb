@@ -30,6 +30,16 @@ public class Game extends BaseRepository{
     @Temporal(TemporalType.TIMESTAMP)
     private Date gameDate;
 
+    private boolean active;
+
+    public void setActive(boolean a){
+        active = a;
+    }
+
+    public boolean getActive(){
+        return this.active;
+    }
+
     public Game() {}
 
     public void addUser(User user){
@@ -38,15 +48,7 @@ public class Game extends BaseRepository{
         userGame.setUsername(user.getUsername());
         userGame.setGame(this);
         userGame.setUser(user);
-        //userGame.setHand("3♠,4♠,5♠,6♠,7♠");
         this.users.add(userGame);
-        //persist(userGame);
-
-
-        //persist(userGame);
-        //return userGame;
-
-
     }
 
     public void setGameName(String _name)

@@ -30,6 +30,14 @@ public class UserGame implements Serializable{
     @JoinColumn(name = "gameName", referencedColumnName = "gameName", insertable = false, updatable = false)
     private Game game;
 
+    public Game getGame(){
+        return this.game;
+    }
+
+    public User getUser(){
+        return this.user;
+    }
+
 
     private String hand;
 

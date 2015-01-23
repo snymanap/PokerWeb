@@ -40,6 +40,11 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/history").with(ApplicationController.class, "history");
 
 
+        router.GET().route("/game/{gameName}").with(ApplicationController.class, "gameResult");
+        router.GET().route("/currentGames/{user}").with(ApplicationController.class, "currentGames");
+
+
+
         
 
         ///////////////////////////////////////////////////////////////////////

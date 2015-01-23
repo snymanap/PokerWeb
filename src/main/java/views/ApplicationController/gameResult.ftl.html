@@ -1,0 +1,27 @@
+<#import "../layout/defaultLayout.ftl.html" as layout>
+    <@layout.myLayout "Home page">
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div class = "jumbotron">
+    <h2>Users in game ${game}</h2>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Hand</th>
+        <th>Result</th>
+    </tr>
+    <#noescape>${output}</#noescape>
+</table>
+    </div>
+
+
+
+</body>
+</html>
+</@layout.myLayout>

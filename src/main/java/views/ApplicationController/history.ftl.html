@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<#import "../layout/defaultLayout.ftl.html" as layout>
+    <@layout.myLayout "Home page">
+
+    <!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
@@ -6,5 +9,23 @@
 </head>
 <body>
 <h2>History</h2>
+<div class = "jumbotron">
+
+
+    <table id = "table1" border="1" width = "100%">
+        <tr>
+            <th>Game Name</th>
+            <th>Username</th>
+            <th>Winner</th>
+            <th>Game Date</th>
+        </tr>
+        <#noescape>${stuff}</#noescape>
+
+
+    </table>
+</div>
+<!--<script type="text/javascript" src="/assets/webjars/jquery/2.1.1/jquery.js"></script>
+<script type="text/javascript" src="/assets/css/js/script.js" ></script>-->
 </body>
 </html>
+</@layout.myLayout>

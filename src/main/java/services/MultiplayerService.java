@@ -84,4 +84,54 @@ public class MultiplayerService {
             System.out.println(games.get(i).getGameName());
         return true;
     }
+
+    @UnitOfWork
+    public List<UserGame> getAllUserGames(){
+        EntityManager entityManager = entityManagerProvider.get();
+
+        Query q = entityManager.createQuery("select x from UserGame x");
+        //q.setParameter("asd", "weg");
+
+        List<UserGame> l = (List<UserGame>) q.getResultList();
+
+        //for (int i = 0; i < l.size(); i++)
+          //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
+        return l;
+    }
+
+    @UnitOfWork
+    public List<UserGame> getDistinctAllUserGames(){
+        EntityManager entityManager = entityManagerProvider.get();
+
+        Query q = entityManager.createQuery("select distinct gameName from UserGame");
+        //q.setParameter("asd", "weg");
+
+        List<UserGame> l = (List<UserGame>) q.getResultList();
+
+        //for (int i = 0; i < l.size(); i++)
+          //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
+        return l;
+    }
+
+    @UnitOfWork
+    public List<UserGame> getUserGamesByUsername(String u){
+        EntityManager entityManager = entityManagerProvider.get();
+
+        Query q = entityManager.createQuery("select x from UserGame x where x.username = :asd");
+        q.setParameter("asd", u);
+        List<UserGame> l = (List<UserGame>) q.getResultList();
+
+        return l;
+    }
+
+    @UnitOfWork
+    public List<UserGame> getUserGamesByGameName(String u){
+        EntityManager entityManager = entityManagerProvider.get();
+
+        Query q = entityManager.createQuery("select x from UserGame x where x.gameName = :asd");
+        q.setParameter("asd", u);
+        List<UserGame> l = (List<UserGame>) q.getResultList();
+
+        return l;
+    }
 }

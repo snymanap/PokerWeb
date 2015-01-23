@@ -3,8 +3,15 @@
 
 
 <h1>Poker web app</h1>
-    <h2> ${name}</h2>
+
     <h2>${register}</h2>
+<br>
+    <center>
+<span class = "label label-primary" style = "font-size:30pt;">${name}</span>
+        </center>
+    <br><br>
+
+
 <!--<p>${i18n("hello.world.json")}</p>-->
 <!--<a href="/hello_world.json">Hello World Json</a>-->
 <div id="images" class = "maindiv">
@@ -16,11 +23,11 @@
     <img src="/assets/card-images/${card5}.png" height = "400" width="200" id="c5" style = "position:relative;">
 </div>
     <br><br><br>
-    <a href = "/multiplayer">Multiplayer</a>
+    <a href = "/multiplayer" class="btn btn-success">Multiplayer</a>
     <br>
-    <a href = "/history">History</a>
+    <a href = "/history" class="btn btn-success">History</a>
     <br>
-    <a href="/logout"> Log out seun</a>
+    <a href="/logout" class="btn btn-danger"> Log out</a>
 
     <script type="text/javascript" src="/assets/webjars/jquery/2.1.1/jquery.js"></script>
     <script type="text/javascript" src="/assets/css/js/script.js" ></script>

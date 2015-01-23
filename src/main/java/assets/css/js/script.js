@@ -20,6 +20,8 @@ $("#c5").fadeIn('slow', function(){
 $(this).animate({'bottom': '-=50px'}, 'slow')});*/
 
 
+
+
 function strength(pass)
 {
     var passStrength = 0;
