@@ -30,7 +30,9 @@ public class Game extends BaseRepository{
     @Temporal(TemporalType.TIMESTAMP)
     private Date gameDate;
 
-    private boolean active;
+    private boolean active = true;
+
+    private String host;
 
     public void setActive(boolean a){
         active = a;
@@ -66,5 +68,9 @@ public class Game extends BaseRepository{
     public Date getGameDate(){
         return this.gameDate;
     }
+
+    public void setHost(String _host) { this.host = _host; }
+
+    public String getHost() { return host; }
 
 }

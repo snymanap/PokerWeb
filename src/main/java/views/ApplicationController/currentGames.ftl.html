@@ -8,12 +8,17 @@
 </head>
 <body>
 
-<table id = "current">
-    <#noescape>${output}</#noescape>
-    <tr>
-        <td>Waiting for players</td>
-    </tr>
-</table>
+<form action="/hostGame" method="get">
+    Game name <input type = "text" name = "gamename" class="form-control" id = "gamename">
+    <input type = "Submit" class="btn btn-primary"  value = "Host a game">
+    <!--<input type = "text" name = "username" class="form-control" id = "username">-->
+</form>
+
+
+<#noescape>${output}</#noescape>
+<#noescape>${joingames}</#noescape>
+
+
 
 
 

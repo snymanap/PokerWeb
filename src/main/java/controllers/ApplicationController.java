@@ -64,41 +64,141 @@ public class ApplicationController {
     @Inject private MultiplayerService multiplayerService;
 
 
-    public Result currentGames(@PathParam("user") String id){
-        List<UserGame> u = multiplayerService.getAllUserGames();
-        UserGame yes = null;
-        String out = "";
-        List<UserGame> yay = new ArrayList<>();
-        for (UserGame userGame : u)
-        {
-            if (userGame.getUsername().compareTo(id) == 0) {
-                yay.add(userGame);
+    public Result hostGame(Context context){
+        List<User> userList = registerService.getUsersByName(context.getSession().get("username"));
+
+        Game game = new Game();
+        game.setActive(true);
+        game.setGameName(context.getParameter("gamename"));
+        game.setHost(context.getSession().get("username"));
+        game.setGameDate(new Date());
+        multiplayerService.gameStore(game);
+
+        UserGame userGame = new UserGame();
+        userGame.setHand(pokerService.dealHand().toString());
+        userGame.setUsername(game.getHost());
+        userGame.setUser(userList.get(0));
+        userGame.setGameName(game.getGameName());
+        userGame.setGame(game);
+        multiplayerService.usergameStore(userGame);
+        String out = "/currentGames/";
+        out += context.getSession().get("username");
+        //out += context.getParameter("username");
+        return Results.redirect(out);
+    }
+
+
+    public Result startGame(@PathParam("game") String id, @PathParam("user") String id2){
+        List<UserGame> userGames = multiplayerService.getAllUserGames();
+        System.out.println("LEWE1");
+        for (UserGame u : userGames){
+            if (u.getGameName().compareTo(id) == 0 && u.getGame().getHost().compareTo(id2) == 0){
+                u.getGame().setActive(false);
+                multiplayerService.gameUpdate2(u.getGame());
+                System.out.println("LEWE2");
             }
         }
+        String out = "/game/";
+        out += id;
+        return Results.redirect(out);
+    }
 
-        List<User> allUsers = new ArrayList<>();
 
-        for (UserGame userGame : u){
-            for (UserGame u2 : yay){
-                if (userGame.getGameName().compareTo(u2.getGameName()) == 0){
-                    allUsers.add(userGame.getUser());
+    public Result currentGames(@PathParam("user") String id){
+        Result result = Results.html();
+        String g = "";
+        String out = "";
+        out += "<h2>Games waiting</h2>";
+        List<UserGame> userGames = new ArrayList<>();
+        List<Game> activeGames = multiplayerService.getActiveGames();
+        List<UserGame> p = multiplayerService.getAllUserGames();
+        for (UserGame u : p){
+            for (Game g2 : activeGames){
+                if (u.getGameName().compareTo(g2.getGameName()) == 0){
+                    userGames.add(u);
                 }
             }
         }
 
-        for (User user : allUsers){
-            out += "<tr><td>";
-            out += user.getUsername();
-            out += "</td></tr>";
+        List<UserGame> userGamesList = multiplayerService.getUserGamesByUsername(id);
+        for (UserGame userGame1 : userGamesList){
+            String pie = "";
+            if (userGame1.getGame().getActive() == true)
+            {
+                pie = userGame1.getGameName();
+                out += "<h1>";
+                out += pie;
+                out += "</h1><br><table>";
+            }
+
+            for (UserGame userGame : userGames){
+
+                if (userGame.getGameName().compareTo(userGame1.getGameName()) == 0 && userGame.getGame().getActive() == true){
+
+                    out += "<tr><td>";
+                    out += userGame.getUsername();
+                    out += "</td></tr>";
+
+                }
+            }
+            if (userGame1.getGame().getActive() == true) out += "<tr><td>Waiting for players to join</td></tr></table>";
+            if (userGame1.getGame().getHost().compareTo(id) == 0 && userGame1.getGame().getActive() == true){
+                out += "<br><a href='/start/";
+                out += userGame1.getGameName();
+                out += "/";
+                out += userGame1.getUsername();
+                out += "'>Start game</a>";
+            }
+
         }
 
-        Result result = Results.html();
+
+
+        List<UserGame> distinctU = multiplayerService.getAllUserGames();
+        String out2 = "";
+        out2 += "<h2>Join games</h2> <table>";
+        for (UserGame userGame : distinctU){
+            if (userGame.getUsername().compareTo(id) != 0){
+                out2 += "<tr><td><a href='/joinGame/";
+
+                out2 += userGame.getGameName();
+                out2 += "/";
+                out2 += id;
+
+                out2 += "'>Join game</a></td><td>";
+                out2 += userGame.getGameName();
+                out2 += "</td></tr>";
+            }
+        }
+
+        out2 += "</table>";
+
+
+
+
         result.render("output", out);
+        result.render("joingames", out2);
         return result;
 
 
 
+    }
 
+    public Result joinGame(@PathParam("game") String id, @PathParam("user") String id2){
+        List<User> userList = registerService.getUsersByName(id2);
+        UserGame userGame = new UserGame();
+        List<UserGame> gameList = multiplayerService.getUserGamesByGameName(id);
+        Game game = gameList.get(0).getGame();
+        userGame.setGame(game);
+        userGame.setGameName(game.getGameName());
+        userGame.setUser(userList.get(0));
+        userGame.setHand(pokerService.dealHand().toString());
+        userGame.setUsername(userList.get(0).getUsername());
+        multiplayerService.usergameStore(userGame);
+        String res = "/currentGames/";
+        res += id2;
+
+        return Results.redirect(res);
     }
 
 
@@ -110,6 +210,7 @@ public class ApplicationController {
         game.setGameDate(new Date());
         game.setGameName("lekkergame");
         game.setActive(true);
+        game.setHost("Arno");
 
         List<User> users = registerService.getAllUsers();
 
@@ -213,6 +314,7 @@ public class ApplicationController {
         game2.setGameName("weg");
         game2.setGameDate(new Date());
         game2.setActive(true);
+        game2.setHost("Hardu");
         multiplayerService.gameStore(game2);
 
         user2 = new User();
@@ -307,26 +409,30 @@ public class ApplicationController {
             return result;
         result = Results.html();
         String out = "";
-        String c ="";
+        String c = "";
         List<UserGame> hello = multiplayerService.getUserGamesByGameName(id);
-        System.out.println("HIIIIIIIIIIIIIIIIIIIIII " + hello.get(0).getHand());
+        //System.out.println("HIIIIIIIIIIIIIIIIIIIIII " + hello.get(0).getHand());
         for (UserGame userGame : hello){
+            String uig = userGame.getHand();
+            uig = uig.replace("(","");
+            uig = uig.replace(")","");
+            String[] ar = uig.split(",");
             out += "<tr><td>";
             out += userGame.getUsername();
             out += "</td><td>";
-            c = pokerService.convert(new Card(userGame.getHand().substring(0,2)));
+            c = pokerService.convert(new Card(ar[0]));
             out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
-            c = pokerService.convert(new Card(userGame.getHand().substring(3,5)));
+            c = pokerService.convert(new Card(ar[1]));
             out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
-            c = pokerService.convert(new Card(userGame.getHand().substring(6,8)));
+            c = pokerService.convert(new Card(ar[2]));
             out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
-            c = pokerService.convert(new Card(userGame.getHand().substring(9,11)));
+            c = pokerService.convert(new Card(ar[3]));
             out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
-            c = pokerService.convert(new Card(userGame.getHand().substring(12,14)));
+            c = pokerService.convert(new Card(ar[4]));
             out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
             out += "</td><td>";
 
-            out += pokerService.evaluate(new Hand(userGame.getHand().substring(0,2), userGame.getHand().substring(3,5), userGame.getHand().substring(6,8),userGame.getHand().substring(9,11), userGame.getHand().substring(12,14) ));
+            out += pokerService.evaluate(new Hand(ar[0], ar[1], ar[2],ar[3], ar[4]));
             out += "</td></tr>";
 
         }
@@ -340,12 +446,27 @@ public class ApplicationController {
 
 
     public Result history(){
-        List<UserGame> u = multiplayerService.getAllUserGames();
+        List<Game> activeGames = multiplayerService.getInactiveGames();
+        List<UserGame> us = multiplayerService.getAllUserGames();
+        List<UserGame> u = new ArrayList<>();
+        for (UserGame userGame : us){
+            for (Game game : activeGames){
+                if (userGame.getGameName().compareTo(game.getGameName()) == 0){
+                    u.add(userGame);
+                }
+            }
+        }
+
         //List<UserGame> u = multiplayerService.getDistinctAllUserGames();
         String out = "";
     //out += "<tr>";
+        String c="";
         for (UserGame userGame : u)
         {
+            String uig = userGame.getHand();
+            uig = uig.replace("(","");
+            uig = uig.replace(")","");
+            String[] ar = uig.split(",");
             out += "<tr><td>";
             out += "<a href = '/game/";
             out += userGame.getGameName();
@@ -354,8 +475,16 @@ public class ApplicationController {
             out += "</a>";
             out += "</td><td>";
             out += userGame.getUsername();
-            out += "</td><td>";
-            out += userGame.getHand();
+            c = pokerService.convert(new Card(ar[0]));
+            out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
+            c = pokerService.convert(new Card(ar[1]));
+            out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
+            c = pokerService.convert(new Card(ar[2]));
+            out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
+            c = pokerService.convert(new Card(ar[3]));
+            out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
+            c = pokerService.convert(new Card(ar[4]));
+            out += "<img src='/assets/card-images/" + c + ".png' height = '100' width='50' id='c1' style = 'position:relative;'>";
             out += "</td><td>";
             out += userGame.getGame().getGameDate().toString();
             out += "</td></tr>";
@@ -419,6 +548,14 @@ public class ApplicationController {
         result.render("card3", pokerService.convert(pokerService.getHand().get(2)));
         result.render("card4", pokerService.convert(pokerService.getHand().get(3)));
         result.render("card5", pokerService.convert(pokerService.getHand().get(4)));
+
+
+        String out = "<a href='/currentGames/";
+        out += context.getSession().get("username");
+        out += "' class = 'btn btn-success'>View current games</a>";
+        result.render("output", out);
+
+
         return result;
 
     }

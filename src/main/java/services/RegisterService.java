@@ -88,6 +88,15 @@ public class RegisterService {
     }
 
     @UnitOfWork
+    public List<User> getUsersByName(String name){
+        EntityManager entityManager = entityManagerProvider.get();
+        Query q = entityManager.createQuery("SELECT x FROM User x WHERE x.username = :asd");
+        q.setParameter("asd", name);
+        List<User> users = (List<User>) q.getResultList();
+        return users;
+    }
+
+    @UnitOfWork
     public boolean userGet(String _username) {
 
         EntityManager entityManager = entityManagerProvider.get();

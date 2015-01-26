@@ -46,6 +46,26 @@ public class MultiplayerService {
 
     }
 
+    @Transactional
+    public void gameUpdate(String _host, String _game) {
+        EntityManager entityManager = entityManagerProvider.get();
+        Query q = entityManager.createQuery("update Game set host = :Host" + " where gameName = :Game");
+        q.setParameter("Host", _host);
+        q.setParameter("Game", _game);
+        int result = q.executeUpdate();
+        //entityManager.merge()
+        //entityManager.flush();
+
+        //return true;
+
+    }
+
+    @Transactional
+    public void gameUpdate2(Game game){
+        EntityManager entityManager = entityManagerProvider.get();
+        entityManager.merge(game);
+    }
+
     /*@Transactional
     public boolean userGameStore(UserGame userGame)
     {
@@ -67,6 +87,8 @@ public class MultiplayerService {
                 System.out.println(games.get(i).getGameName());
         //return "No users";
     }
+
+
 
     @UnitOfWork
     public boolean gameGet(String _game) {
@@ -103,13 +125,41 @@ public class MultiplayerService {
     public List<UserGame> getDistinctAllUserGames(){
         EntityManager entityManager = entityManagerProvider.get();
 
-        Query q = entityManager.createQuery("select distinct gameName from UserGame");
+        Query q = entityManager.createQuery("select distinct UserGame.gameName from UserGame");
         //q.setParameter("asd", "weg");
 
         List<UserGame> l = (List<UserGame>) q.getResultList();
 
         //for (int i = 0; i < l.size(); i++)
           //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
+        return l;
+    }
+
+    @UnitOfWork
+    public List<Game> getActiveGames(){
+        EntityManager entityManager = entityManagerProvider.get();
+
+        Query q = entityManager.createQuery("select x from Game x where x.active = TRUE");
+        //q.setParameter("asd", "weg");
+
+        List<Game> l = (List<Game>) q.getResultList();
+
+        //for (int i = 0; i < l.size(); i++)
+        //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
+        return l;
+    }
+
+    @UnitOfWork
+    public List<Game> getInactiveGames(){
+        EntityManager entityManager = entityManagerProvider.get();
+
+        Query q = entityManager.createQuery("select x from Game x where x.active = FALSE");
+        //q.setParameter("asd", "weg");
+
+        List<Game> l = (List<Game>) q.getResultList();
+
+        //for (int i = 0; i < l.size(); i++)
+        //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
         return l;
     }
 
