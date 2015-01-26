@@ -64,6 +64,34 @@ public class ApplicationController {
     @Inject private MultiplayerService multiplayerService;
 
 
+    public Result lobby(@PathParam("game") String id){
+        List<UserGame> userGames = multiplayerService.getAllUserGames();
+        List<Game> gameList = multiplayerService.getAllGames();
+        String out = "";
+        String yes = "";
+        out += "<table>";
+        for (Game game : gameList) {
+            for (UserGame u : userGames) {
+                if (u.getGameName().compareTo(id) == 0 && game.getGameName().compareTo(u.getGameName()) == 0) {
+                    out += "<h2>";
+                    out += u.getGameName();
+                    out += "</h2><br>";
+                    out += "<tr><td>";
+                    out += u.getUsername();
+                    out += "</td></tr>";
+                }
+            }
+        }
+        out += "</table>";
+        out += "<br><a href = '/start/";
+        out += id;
+        out += "'>Deal</a>";
+        Result result = Results.html();
+        result.render("output", out);
+        return result;
+    }
+
+
     public Result hostGame(Context context){
         List<User> userList = registerService.getUsersByName(context.getSession().get("username"));
 
@@ -88,14 +116,14 @@ public class ApplicationController {
     }
 
 
-    public Result startGame(@PathParam("game") String id, @PathParam("user") String id2){
+    public Result startGame(@PathParam("game") String id){
         List<UserGame> userGames = multiplayerService.getAllUserGames();
-        System.out.println("LEWE1");
+        //System.out.println("LEWE1");
         for (UserGame u : userGames){
-            if (u.getGameName().compareTo(id) == 0 && u.getGame().getHost().compareTo(id2) == 0){
+            if (u.getGameName().compareTo(id) == 0){
                 u.getGame().setActive(false);
                 multiplayerService.gameUpdate2(u.getGame());
-                System.out.println("LEWE2");
+                //System.out.println("LEWE2");
             }
         }
         String out = "/game/";
@@ -143,11 +171,11 @@ public class ApplicationController {
             }
             if (userGame1.getGame().getActive() == true) out += "<tr><td>Waiting for players to join</td></tr></table>";
             if (userGame1.getGame().getHost().compareTo(id) == 0 && userGame1.getGame().getActive() == true){
-                out += "<br><a href='/start/";
+                out += "<br><a href='/lobby/";
                 out += userGame1.getGameName();
-                out += "/";
-                out += userGame1.getUsername();
-                out += "'>Start game</a>";
+                /*out += "/";
+                out += userGame1.getUsername();*/
+                out += "'>Go to lobby</a>";
             }
 
         }
@@ -155,21 +183,27 @@ public class ApplicationController {
 
 
         List<UserGame> distinctU = multiplayerService.getAllUserGames();
+        List<UserGame> currentGames = multiplayerService.getUserGamesByUsername(id);
+        List<Game> gameList = multiplayerService.getAllGames();
         String out2 = "";
         out2 += "<h2>Join games</h2> <table>";
-        for (UserGame userGame : distinctU){
-            if (userGame.getUsername().compareTo(id) != 0){
-                out2 += "<tr><td><a href='/joinGame/";
 
-                out2 += userGame.getGameName();
-                out2 += "/";
-                out2 += id;
+            for (UserGame current : distinctU) {
+                for (Game userGame : gameList) {
+                    if (current.getGameName().compareTo(userGame.getGameName()) == 0 && current.getUsername().compareTo(id) != 0) {
+                        out2 += "<tr><td><a href='/joinGame/";
 
-                out2 += "'>Join game</a></td><td>";
-                out2 += userGame.getGameName();
-                out2 += "</td></tr>";
+                        out2 += userGame.getGameName();
+                        out2 += "/";
+                        out2 += id;
+
+                        out2 += "'>Join game</a></td><td>";
+                        out2 += userGame.getGameName();
+                        out2 += "</td></tr>";
+                    }
+                }
             }
-        }
+
 
         out2 += "</table>";
 
@@ -195,8 +229,8 @@ public class ApplicationController {
         userGame.setHand(pokerService.dealHand().toString());
         userGame.setUsername(userList.get(0).getUsername());
         multiplayerService.usergameStore(userGame);
-        String res = "/currentGames/";
-        res += id2;
+        String res = "/lobby/";
+        res += id;
 
         return Results.redirect(res);
     }

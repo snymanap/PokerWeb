@@ -76,16 +76,16 @@ public class MultiplayerService {
     }*/
 
     @UnitOfWork
-    public void getAllGames(){
+    public List<Game> getAllGames(){
         EntityManager entityManager = entityManagerProvider.get();
-        String out = "";
         Query q = entityManager.createQuery("SELECT x FROM Game x");
 
         List<Game> games = (List<Game>) q.getResultList();
-        if (games != null)
+        /*if (games != null)
             for (int i = 0; i < games.size(); i++)
-                System.out.println(games.get(i).getGameName());
+                System.out.println(games.get(i).getGameName());*/
         //return "No users";
+        return games;
     }
 
 
