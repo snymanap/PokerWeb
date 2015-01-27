@@ -1,5 +1,6 @@
 package services;
 
+import Repositories.UserRepository;
 import Users.User;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -16,6 +17,7 @@ import javax.persistence.Query;
 //import javax.xml.transform.Result;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Andre on 2015-01-16.
@@ -23,15 +25,15 @@ import java.util.List;
 
 @Singleton
 public class RegisterService {
+    @Inject
+    UserRepository userRepository;
 
-    public static String output()
-    {
+    public static String output() {
         return "Register to poker service";
 
     }
 
-    public static boolean createUser(String name, String pass)
-    {
+    public static boolean createUser(String name, String pass) {
         User u = new User(name, pass);
         for (User user : userList) {
             if (user.getUsername().compareTo(name) == 0)
@@ -43,69 +45,25 @@ public class RegisterService {
         return true;
     }
 
-    public static List<User> getUsers()
-    {
+    public static List<User> getUsers() {
         return userList;
     }
 
     private static List<User> userList = new ArrayList<>();
 
-
-    @Inject private Provider<EntityManager> entityManagerProvider;
-    @Transactional
-    public boolean userStore(User user) {
-        EntityManager entityManager = entityManagerProvider.get();
-
-        entityManager.persist(user);
-        return true;
-
+    public boolean registerUser(User user) {
+        return userRepository.userStore(user);
     }
 
-    @Transactional
-    public void store(Object o)
+    public boolean userExists(String username)
     {
-        EntityManager entityManager = entityManagerProvider.get();
-
-        entityManager.persist(o);
-
+        return  userRepository.userGet(username);
     }
 
-    @UnitOfWork
-    public List<User> getAllUsers(){
-        EntityManager entityManager = entityManagerProvider.get();
-        String out = "";
-        Query q = entityManager.createQuery("SELECT x FROM User x");
+    public Optional<User> getUserByName(String username)
+    {
+       return userRepository.getUserByName(username);
 
-        List<User> users = (List<User>) q.getResultList();
 
-            return users;
     }
-
-    @UnitOfWork
-    public List<User> getUsersByName(String name){
-        EntityManager entityManager = entityManagerProvider.get();
-        Query q = entityManager.createQuery("SELECT x FROM User x WHERE x.username = :asd");
-        q.setParameter("asd", name);
-        List<User> users = (List<User>) q.getResultList();
-        return users;
-    }
-
-    @UnitOfWork
-    public boolean userGet(String _username) {
-
-        EntityManager entityManager = entityManagerProvider.get();
-
-        Query q = entityManager.createQuery("SELECT x FROM User x where x.username = :usr");
-        q.setParameter("usr", _username);
-        List<User> users = (List<User>) q.getResultList();
-        if (users.size() == 0)
-            return false;
-
-        for (int i = 0; i < users.size(); i++)
-            System.out.println(users.get(i).getUsername());
-        return true;
-    }
-
-
-
 }

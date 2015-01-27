@@ -42,6 +42,7 @@ import java.lang.Object;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.Popup;
 
 import ninja.Context;
@@ -67,7 +68,7 @@ public class ApplicationController {
     @Inject
     private MultiplayerService multiplayerService;
 
-    private static final int STARTING_BALANCE=2000;
+    private static final int STARTING_BALANCE = 2000;
 
 
     public Result lobby(@PathParam("game") String id, Context context) {
@@ -113,7 +114,7 @@ public class ApplicationController {
 
 
     public Result hostGame(Context context) {
-        List<User> userList = registerService.getUsersByName(context.getSession().get("username"));
+        User user = registerService.getUserByName(context.getSession().get("username")).get();
 
         Game game = new Game();
         game.setActive(true);
@@ -125,7 +126,7 @@ public class ApplicationController {
         UserGame userGame = new UserGame();
         userGame.setHand(pokerService.dealHand().toString());
         userGame.setUsername(game.getHost());
-        userGame.setUser(userList.get(0));
+        userGame.setUser(user);
         userGame.setGameName(game.getGameName());
         userGame.setGame(game);
         multiplayerService.usergameStore(userGame);
@@ -254,15 +255,15 @@ public class ApplicationController {
     }
 
     public Result joinGame(@PathParam("game") String id, @PathParam("user") String id2) {
-        List<User> userList = registerService.getUsersByName(id2);
+        User user = registerService.getUserByName(id2).get();
         UserGame userGame = new UserGame();
         List<UserGame> gameList = multiplayerService.getUserGamesByGameName(id);
         Game game = gameList.get(0).getGame();
         userGame.setGame(game);
         userGame.setGameName(game.getGameName());
-        userGame.setUser(userList.get(0));
+        userGame.setUser(user);
         userGame.setHand(pokerService.dealHand().toString());
-        userGame.setUsername(userList.get(0).getUsername());
+        userGame.setUsername(user.getUsername());
         multiplayerService.usergameStore(userGame);
         String res = "/lobby/";
         res += id;
@@ -396,12 +397,13 @@ public class ApplicationController {
 
         Result result = Results.html();
         String names = "";
-
+        Optional<User> optionalUser;
         //login
         if (context.getParameter("usernameReg") == null && context.getParameter("passwordReg") == null) {
             String name = context.getParameter("username");
             String pass = context.getParameter("password");
-            if (!registerService.userGet(name)) {
+            optionalUser = registerService.getUserByName(name);
+            if (!optionalUser.isPresent()) {
                 result = Results.redirect("/register");
                 System.out.println("already");
                 return result;
@@ -410,13 +412,12 @@ public class ApplicationController {
 
             context.getSession().put("username", names);
 
-        }
-        else { //register
+        } else { //register
             String name = context.getParameter("usernameReg");
             String pass = context.getParameter("passwordReg");
             User u = new User(name, pass);
             u.setBalance(STARTING_BALANCE);
-            if (!registerService.userStore(u)) {
+            if (!registerService.registerUser(u)) {
                 result = Results.redirect("/register");
                 System.out.println("No user found");
                 return result;
@@ -475,9 +476,7 @@ public class ApplicationController {
     }
 
     public Result register() {
-        registerService.getAllUsers();
-        Result result = Results.html();
-        result = login();
+        Result result = login();
         return result;
     }
 
