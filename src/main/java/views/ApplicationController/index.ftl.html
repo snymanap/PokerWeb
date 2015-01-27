@@ -1,37 +1,40 @@
-<#import "../layout/defaultLayout.ftl.html" as layout> 
-<@layout.myLayout "Home page">    
+<#import "../layout/defaultLayout.ftl.html" as layout>
+    <@layout.myLayout "Home page">
 
 
-<h1>Poker web app</h1>
+    <h1>Poker web app</h1>
 
     <h2>${register}</h2>
-<br>
+    <#if user.balance??>
+        <h2>Balance : ${user.balance}</h2>
+    </#if>
+    <br>
     <center>
-<span class = "label label-primary" style = "font-size:30pt;">${name}</span>
-        </center>
+        <span class="label label-primary" style="font-size:30pt;">${name}</span>
+    </center>
     <br><br>
 
 
-<!--<p>${i18n("hello.world.json")}</p>-->
-<!--<a href="/hello_world.json">Hello World Json</a>-->
-<div id="images" class = "maindiv">
+    <!--<p>${i18n("hello.world.json")}</p>-->
+    <!--<a href="/hello_world.json">Hello World Json</a>-->
+    <div id="images" class="maindiv">
 
-    <img src="/assets/card-images/${card1}.png" height = "400" width="200" id="c1" style = "position:relative;">
-    <img src="/assets/card-images/${card2}.png" height = "400" width="200" id="c2" style = "position:relative;">
-    <img src="/assets/card-images/${card3}.png" height = "400" width="200" id="c3" style = "position:relative;">
-    <img src="/assets/card-images/${card4}.png" height = "400" width="200" id="c4" style = "position:relative;">
-    <img src="/assets/card-images/${card5}.png" height = "400" width="200" id="c5" style = "position:relative;">
-</div>
+        <img src="/assets/card-images/${card1}.png" height="400" width="200" id="c1" style="position:relative;">
+        <img src="/assets/card-images/${card2}.png" height="400" width="200" id="c2" style="position:relative;">
+        <img src="/assets/card-images/${card3}.png" height="400" width="200" id="c3" style="position:relative;">
+        <img src="/assets/card-images/${card4}.png" height="400" width="200" id="c4" style="position:relative;">
+        <img src="/assets/card-images/${card5}.png" height="400" width="200" id="c5" style="position:relative;">
+    </div>
     <br><br><br>
     <#noescape>${output}</#noescape>
-    <a href = "/multiplayer" class="btn btn-success">Multiplayer</a>
+    <a href="/multiplayer" class="btn btn-success">Multiplayer</a>
     <br>
-    <a href = "/history" class="btn btn-success">History</a>
+    <a href="/history" class="btn btn-success">History</a>
     <br>
     <a href="/logout" class="btn btn-danger"> Log out</a>
 
     <script type="text/javascript" src="/assets/webjars/jquery/2.1.1/jquery.js"></script>
-    <script type="text/javascript" src="/assets/css/js/script.js" ></script>
-   <!-- <a href="/login.ftl.html"/> WERk</a>-->
+    <script type="text/javascript" src="/assets/css/js/script.js"></script>
+    <!-- <a href="/login.ftl.html"/> WERk</a>-->
 
 </@layout.myLayout>

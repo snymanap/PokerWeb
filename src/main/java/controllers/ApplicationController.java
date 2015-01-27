@@ -69,6 +69,7 @@ public class ApplicationController {
     private MultiplayerService multiplayerService;
 
     private static final int STARTING_BALANCE = 2000;
+    private static final String USER="user";
 
 
     public Result lobby(@PathParam("game") String id, Context context) {
@@ -391,7 +392,6 @@ public class ApplicationController {
     }
 
     public Result index(Context context) {
-
         Result result = Results.html();
         String names = "";
         Optional<User> optionalUser;
@@ -419,6 +419,7 @@ public class ApplicationController {
                 System.out.println("No user found");
                 return result;
             }
+            optionalUser =Optional.of(u);
             names = name;
 
             result = Results.redirect("/register");
@@ -431,6 +432,10 @@ public class ApplicationController {
         pokerService.createDeck();
         List<Hand> hand = pokerService.getHandList();
 
+        if (optionalUser.isPresent())
+        {
+            result.render(USER, optionalUser.get());
+        }
 
         result.render("register", "Hello " + context.getSession().get("username"));
         result.render("name", pokerService.test());
