@@ -115,12 +115,16 @@ public class ApplicationController {
 
 
     public Result hostGame(Context context) {
+        long buyInAmount=Long.parseLong(context.getParameter("gameBuyIn"));
         User user = registerService.getUserByName(context.getSession().get("username")).get();
+
+        user.setBalance(user.getBalance()- buyInAmount);
+        registerService.updateUser(user);
 
         Game game = new Game();
         game.setActive(true);
         game.setGameName(context.getParameter("gamename"));
-        game.setBuyIn(Long.parseLong(context.getParameter("gameBuyIn")));
+        game.setBuyIn(buyInAmount);
         game.setHost(context.getSession().get("username"));
         game.setGameDate(new Date());
         multiplayerService.gameStore(game);
