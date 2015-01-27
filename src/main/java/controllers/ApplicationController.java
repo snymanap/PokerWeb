@@ -225,7 +225,6 @@ public class ApplicationController {
         /*for (UserGame current : currentGames){
             for (Game userGame : gameList){
                 if (userGame.getActive() == true && userGame.getHost().compareTo(context.getSession().get("username")) != 0){
-
                     out2 += "<tr><td><a href='/joinGame/";
 
                     out2 += userGame.getGameName();
