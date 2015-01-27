@@ -1,5 +1,7 @@
 package services;
 
+import Users.User;
+import Users.UserGame;
 import cards.*;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Singleton;
@@ -104,14 +106,14 @@ public class PokerService
         else return "High card";
     }
 
-    public String evalHands()
+    public String evalHands(List<Hand> _handList)
     {
         String[] ranks = {"Straight flush", "Four of a kind", "Full house","Flush" , "Straight", "Three of a kind", "Two Pair", "One Pair","High card" };
 
         //Hand win = null;
 
         Hand cur = null;
-        Hand win = handList.get(0);
+        Hand win = _handList.get(0);
         int intHigh = -1;
         int intCur = -1;
 
@@ -119,9 +121,9 @@ public class PokerService
             if (evaluate(win).compareTo(ranks[i]) == 0)
                 intHigh = i;
 
-        for (int i = 1; i < handList.size(); i++)
+        for (int i = 1; i < _handList.size(); i++)
         {
-            cur = handList.get(i);
+            cur = _handList.get(i);
 
                 for (int j = 0; j < ranks.length; j++)
                 {
@@ -131,7 +133,7 @@ public class PokerService
                         if (intHigh > intCur)
                         {
                             intHigh = intCur;
-                            win = handList.get(i);
+                            win = _handList.get(i);
                         }
                     }
                 }
@@ -146,7 +148,6 @@ public class PokerService
     }
 
     public String convert(Card card){
-        //Card card = hand.get(i);
         if (card.toString().compareTo("2♣") == 0)
             return "2_of_clubs";
         if (card.toString().compareTo("3♣") == 0)
@@ -259,5 +260,7 @@ public class PokerService
     }
 
     private List<Hand> handList;
+
+
 
 }

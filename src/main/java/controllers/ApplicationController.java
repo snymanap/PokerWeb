@@ -280,7 +280,7 @@ public class ApplicationController {
         result.render("handDeal4", pokerService.test());
         result.render("handDeal5", pokerService.test());
 
-        result.render("winning", pokerService.evalHands());
+        //result.render("winning", pokerService.evalHands());
         return result;
     }
 
