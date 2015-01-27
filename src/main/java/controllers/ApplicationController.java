@@ -69,7 +69,7 @@ public class ApplicationController {
     private MultiplayerService multiplayerService;
 
     private static final int STARTING_BALANCE = 2000;
-    private static final String USER="user";
+    private static final String USER = "user";
 
 
     public Result lobby(@PathParam("game") String id, Context context) {
@@ -120,6 +120,7 @@ public class ApplicationController {
         Game game = new Game();
         game.setActive(true);
         game.setGameName(context.getParameter("gamename"));
+        game.setBuyIn(Long.parseLong(context.getParameter("gameBuyIn")));
         game.setHost(context.getSession().get("username"));
         game.setGameDate(new Date());
         multiplayerService.gameStore(game);
@@ -211,37 +212,53 @@ public class ApplicationController {
         List<Game> gamesWhereUserActive = new ArrayList<>();
         List<Game> gamesWhereUserNotActive = new ArrayList<>();
         System.out.println("USERNAME " + context.getSession().get("username"));
-        for (UserGame u : distinctU){
-            if (u.getUsername().compareTo(context.getSession().get("username")) == 0){
+        for (UserGame u : distinctU) {
+            if (u.getUsername().compareTo(context.getSession().get("username")) == 0) {
                 gamesWhereUserActive.add(u.getGame());
             }
         }
 
         boolean found = false;
-        for (Game game : gameList){
-            System.out.println("YOOOOOOOOOO " + game.getGameName() );
-            for (Game game1 : gamesWhereUserActive){
-                if (game.getGameName().compareTo(game1.getGameName()) == 0){
+        for (Game game : gameList) {
+            System.out.println("YOOOOOOOOOO " + game.getGameName());
+            for (Game game1 : gamesWhereUserActive) {
+                if (game.getGameName().compareTo(game1.getGameName()) == 0) {
                     System.out.println("HEYYYYYYYYYYYYY " + game1.getGameName());
                     found = true;
                 }
             }
-            if (!found){
+            if (!found) {
                 gamesWhereUserNotActive.add(game);
             }
             found = false;
         }
 
-        for (Game game : gamesWhereUserNotActive){
-            out2 += "<tr><td><a href='/joinGame/";
+        Optional<User> optionalUser = registerService.getUserByName(id);
 
-            out2 += game.getGameName();
-            out2 += "/";
-            out2 += id;
+        if (optionalUser.isPresent()) {
+            long userBalance = optionalUser.get().getBalance();
 
-            out2 += "'>Join game</a></td><td>";
-            out2 += game.getGameName();
-            out2 += "</td></tr>";
+            for (Game game : gamesWhereUserNotActive) {
+                long buyInAmount = game.getBuyIn();
+
+                if (userBalance >= buyInAmount) {
+                    out2 += "<tr><td><a href='/joinGame/";
+
+                    out2 += game.getGameName();
+                    out2 += "/";
+                    out2 += id;
+
+                    out2 += "'>Join game</a></td><td>";
+                    out2 += game.getGameName();
+                    out2 += "</td>";
+                    out2 += "<td>";
+                    out2 += " ";
+                    out2 += "Buy In Amount: ";
+                    out2 += game.getBuyIn();
+                    out2 += "</td>";
+                    out2 += "</tr>";
+                }
+            }
         }
 
 
@@ -255,11 +272,15 @@ public class ApplicationController {
 
     }
 
-    public Result joinGame(@PathParam("game") String id, @PathParam("user") String id2) {
-        User user = registerService.getUserByName(id2).get();
+    public Result joinGame(@PathParam("game") String gameId, @PathParam("user") String username) {
+        User user = registerService.getUserByName(username).get();
         UserGame userGame = new UserGame();
-        List<UserGame> gameList = multiplayerService.getUserGamesByGameName(id);
+        List<UserGame> gameList = multiplayerService.getUserGamesByGameName(gameId);
         Game game = gameList.get(0).getGame();
+
+        user.setBalance(user.getBalance()-game.getBuyIn());
+        registerService.updateUser(user);
+
         userGame.setGame(game);
         userGame.setGameName(game.getGameName());
         userGame.setUser(user);
@@ -267,7 +288,7 @@ public class ApplicationController {
         userGame.setUsername(user.getUsername());
         multiplayerService.usergameStore(userGame);
         String res = "/lobby/";
-        res += id;
+        res += gameId;
 
         return Results.redirect(res);
     }
@@ -309,9 +330,9 @@ public class ApplicationController {
         result = Results.html();
         String out = "";
         String c = "";
-        List<UserGame> hello = multiplayerService.getUserGamesByGameName(id);
+        List<UserGame> userGames = multiplayerService.getUserGamesByGameName(id);
 
-        for (UserGame userGame : hello) {
+        for (UserGame userGame : userGames) {
             String uig = userGame.getHand();
             uig = uig.replace("(", "");
             uig = uig.replace(")", "");
@@ -336,6 +357,10 @@ public class ApplicationController {
 
         }
 
+        UserGame winnerUserGame= userGames.get(0);
+        long potTotal= multiplayerService.allocateWinningsToWinner(winnerUserGame.getUser(),winnerUserGame.getGame().getBuyIn(),userGames.size());
+
+        result.render("potTotal", potTotal);
         result.render("output", out);
         result.render("game", id);
         return result;
@@ -422,7 +447,7 @@ public class ApplicationController {
                 System.out.println("No user found");
                 return result;
             }
-            optionalUser =Optional.of(u);
+            optionalUser = Optional.of(u);
             names = name;
 
             result = Results.redirect("/register");
@@ -435,8 +460,7 @@ public class ApplicationController {
         pokerService.createDeck();
         List<Hand> hand = pokerService.getHandList();
 
-        if (optionalUser.isPresent())
-        {
+        if (optionalUser.isPresent()) {
             result.render(USER, optionalUser.get());
         }
 

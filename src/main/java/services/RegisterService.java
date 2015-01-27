@@ -55,6 +55,10 @@ public class RegisterService {
         return userRepository.userStore(user);
     }
 
+    public void updateUser(User user) {
+        userRepository.merge(user);
+    }
+
     public boolean userExists(String username)
     {
         return  userRepository.userGet(username);
