@@ -1,5 +1,6 @@
 package services;
 
+import Repositories.UserRepository;
 import Users.Game;
 import Users.User;
 import Users.UserGame;
@@ -23,6 +24,9 @@ import java.util.List;
 public class MultiplayerService {
     @Inject
     private Provider<EntityManager> entityManagerProvider;
+
+    @Inject
+    UserRepository userRepository;
 
     @Transactional
     public boolean gameStore(Game game) {
@@ -168,6 +172,14 @@ public class MultiplayerService {
         List<UserGame> l = (List<UserGame>) q.getResultList();
 
         return l;
+    }
+
+    public long allocateWinningsToWinner(User user, long buyInAmount, int numberOfPlayers)
+    {
+        long potTotal= buyInAmount * (numberOfPlayers -1);
+        user.setBalance(user.getBalance() + (potTotal));
+        userRepository.merge(user);
+        return potTotal;
     }
 
     /*@UnitOfWork
