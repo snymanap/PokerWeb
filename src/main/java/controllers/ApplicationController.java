@@ -243,7 +243,6 @@ public class ApplicationController {
         }
 
 
-
         out2 += "</table>";
 
 
