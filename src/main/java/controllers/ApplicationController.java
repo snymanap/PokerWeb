@@ -356,13 +356,30 @@ public class ApplicationController {
             out += "</td></tr>";
 
         }
-        //TODO determine winner
-        UserGame winnerUserGame= userGames.get(0);
-        long potTotal= multiplayerService.allocateWinningsToWinner(winnerUserGame.getUser(),winnerUserGame.getGame().getBuyIn(),userGames.size());
 
+        List<Hand> handList = new ArrayList<>();
+        for (UserGame userGame : userGames) {
+            String uig = userGame.getHand();
+            uig = uig.replace("(", "");
+            uig = uig.replace(")", "");
+            String[] ar = uig.split(",");
+            Hand hand = new Hand(ar[0], ar[1], ar[2], ar[3], ar[4]);
+            handList.add(hand);
+        }
+        String winningHand = pokerService.evalHands(handList);
+        UserGame winnerUserGame = null;
+        
+        for (UserGame userGame : userGames){
+            if (userGame.getHand().compareTo(winningHand) == 0){
+                winnerUserGame = userGame;
+            }
+        }
+        long potTotal= multiplayerService.allocateWinningsToWinner(winnerUserGame.getUser(),winnerUserGame.getGame().getBuyIn(),userGames.size());
+        //long potTotal = 600;
         result.render("potTotal", potTotal);
         result.render("output", out);
         result.render("game", id);
+        result.render("winner", winnerUserGame.getUsername());
         return result;
 
     }
@@ -490,17 +507,6 @@ public class ApplicationController {
 
     public Result login() {
         Result result = Results.html();
-        /*if (c != null && c.getSession().get("username") != null
-                && logged.
-                compareTo("") != 0
-                && c.getSession().
-                get("username").
-                compareTo(logged) ==0) {
-            System.out.println("HEKEKEKEKEK");
-            return result.redirect("/index");
-        }*/
-
-        //result.render("login", loginService.output());
         return result;
     }
 

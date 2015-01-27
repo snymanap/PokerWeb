@@ -31,23 +31,15 @@ public class MultiplayerService {
     @Transactional
     public boolean gameStore(Game game) {
         EntityManager entityManager = entityManagerProvider.get();
-
         entityManager.persist(game);
-        //entityManager.flush();
-
         return true;
-
     }
 
     @Transactional
     public boolean usergameStore(UserGame game) {
         EntityManager entityManager = entityManagerProvider.get();
-
         entityManager.persist(game);
-        //entityManager.flush();
-
         return true;
-
     }
 
     @Transactional
@@ -57,11 +49,6 @@ public class MultiplayerService {
         q.setParameter("Host", _host);
         q.setParameter("Game", _game);
         int result = q.executeUpdate();
-        //entityManager.merge()
-        //entityManager.flush();
-
-        //return true;
-
     }
 
     @Transactional
@@ -70,22 +57,11 @@ public class MultiplayerService {
         entityManager.merge(game);
     }
 
-    /*@Transactional
-    public boolean userGameStore(UserGame userGame)
-    {
-        EntityManager entityManager = entityManagerProvider.get();
-
-        entityManager.persist(userGame);
-        return true;
-    }*/
-
     @UnitOfWork
     public List<Game> getAllGames(){
         EntityManager entityManager = entityManagerProvider.get();
         Query q = entityManager.createQuery("SELECT x FROM Game x");
-
         List<Game> games = (List<Game>) q.getResultList();
-
         return games;
     }
 
@@ -181,9 +157,4 @@ public class MultiplayerService {
         userRepository.merge(user);
         return potTotal;
     }
-
-    /*@UnitOfWork
-    public List<Game> getUserGamesWhereNot(String _user){
-
-    }*/
 }

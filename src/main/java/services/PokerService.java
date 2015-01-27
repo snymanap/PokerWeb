@@ -108,9 +108,7 @@ public class PokerService
 
     public String evalHands(List<Hand> _handList)
     {
-        String[] ranks = {"Straight flush", "Four of a kind", "Full house","Flush" , "Straight", "Three of a kind", "Two Pair", "One Pair","High card" };
-
-        //Hand win = null;
+        String[] ranks = {"Straight flush", "Four of a kind", "Full house","Flush" , "Straight", "Three of a kind", "Two Pair", "One Pair","High card"};
 
         Hand cur = null;
         Hand win = _handList.get(0);
@@ -137,10 +135,12 @@ public class PokerService
                         }
                     }
                 }
-
-
         }
         return win.toString();
+    }
+
+    public List<Hand> convertToHand(List<String> a){
+        return new ArrayList<>();
     }
 
     public List<Hand> getHandList(){
