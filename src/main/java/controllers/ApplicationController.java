@@ -203,7 +203,7 @@ public class ApplicationController {
         String out2 = "";
         out2 += "<h2>Join games</h2> <table class='table table-striped table-hover '>";
 
-            /*for (UserGame current : distinctU) {
+            for (UserGame current : distinctU) {
                 for (Game userGame : gameList) {
                     if (current.getGameName().compareTo(userGame.getGameName()) != 0 && userGame.getActive() == true && current.getUsername().compareTo(id) != 0 && userGame.getHost().compareTo(id) != 0) {
                         out2 += "<tr><td><a href='/joinGame/";
@@ -217,9 +217,9 @@ public class ApplicationController {
                         out2 += "</td></tr>";
                     }
                 }
-            }*/
+            }
 
-        for (UserGame current : currentGames){
+        /*for (UserGame current : currentGames){
             for (Game userGame : gameList){
                 if (userGame.getActive() == true && userGame.getHost().compareTo(context.getSession().get("username")) != 0){
                     out2 += "<tr><td><a href='/joinGame/";
@@ -233,7 +233,7 @@ public class ApplicationController {
                     out2 += "</td></tr>";
                 }
             }
-        }
+        }*/
 
 
         out2 += "</table>";
