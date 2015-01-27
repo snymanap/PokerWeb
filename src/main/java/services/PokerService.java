@@ -20,7 +20,7 @@ public class PokerService
 
     public String getName()
     {
-        return "Andre";
+        return "Beste game ooit";
     }
 
     public List<Card> createDeck()

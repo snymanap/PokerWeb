@@ -70,6 +70,7 @@ public class ApplicationController {
         String out = "";
         String yes = "";
         out += "<table class='table table-striped table-hover '>";
+
         for (Game game : gameList) {
             for (UserGame u : userGames) {
                 if (u.getGameName().compareTo(id) == 0 && game.getGameName().compareTo(u.getGameName()) == 0) {
@@ -89,7 +90,9 @@ public class ApplicationController {
                 }
             }
         }
+
         out += "</table>";
+
         for (Game game : gameList) {
             if (game.getGameName().compareTo(id) == 0 && game.getHost().compareTo(context.getSession().get("username")) == 0) {
                 out += "<br><a href = '/start/";
@@ -97,6 +100,7 @@ public class ApplicationController {
                 out += "'>Deal</a>";
             }
         }
+
         Result result = Results.html();
         result.render("output", out);
         return result;
@@ -122,18 +126,21 @@ public class ApplicationController {
         multiplayerService.usergameStore(userGame);
         String out = "/currentGames/";
         out += context.getSession().get("username");
+
         return Results.redirect(out);
     }
 
 
     public Result startGame(@PathParam("game") String id){
         List<UserGame> userGames = multiplayerService.getAllUserGames();
+
         for (UserGame u : userGames){
             if (u.getGameName().compareTo(id) == 0){
                 u.getGame().setActive(false);
                 multiplayerService.gameUpdate2(u.getGame());
             }
         }
+
         String out = "/game/";
         out += id;
         return Results.redirect(out);
@@ -148,6 +155,7 @@ public class ApplicationController {
         List<UserGame> userGames = new ArrayList<>();
         List<Game> activeGames = multiplayerService.getActiveGames();
         List<UserGame> p = multiplayerService.getAllUserGames();
+
         for (UserGame u : p){
             for (Game g2 : activeGames){
                 if (u.getGameName().compareTo(g2.getGameName()) == 0){
@@ -157,6 +165,7 @@ public class ApplicationController {
         }
 
         List<UserGame> userGamesList = multiplayerService.getUserGamesByUsername(id);
+
         for (UserGame userGame1 : userGamesList){
             String pie = "";
             if (userGame1.getGame().getActive() == true)
@@ -179,7 +188,7 @@ public class ApplicationController {
             }
             if (userGame1.getGame().getActive() == true) out += "<tr><td>Waiting for players to join</td></tr></table>";
             if (userGame1.getGame().getHost().compareTo(id) == 0 && userGame1.getGame().getActive() == true){
-                out += "<br><a href='/lobby/";
+                out += "<br><a class='btn btn-primary' href='/lobby/";
                 out += userGame1.getGameName();
                 out += "'>Go to lobby</a>";
             }
