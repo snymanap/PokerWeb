@@ -3,6 +3,7 @@ create table User (
    username varchar(12) not null,
     password varchar(255) not null,
     --salt varchar(255) not null,
+    balance BIGINT,
     primary key (username)
 );
 
@@ -11,6 +12,7 @@ create table Game(
     gameDate timestamp,
     active bit,
     host varchar(100),
+    buyIn BIGINT,
     primary key (gameName)
 );
 
