@@ -356,7 +356,7 @@ public class ApplicationController {
             out += "</td></tr>";
 
         }
-
+        //TODO determine winner
         UserGame winnerUserGame= userGames.get(0);
         long potTotal= multiplayerService.allocateWinningsToWinner(winnerUserGame.getUser(),winnerUserGame.getGame().getBuyIn(),userGames.size());
 
