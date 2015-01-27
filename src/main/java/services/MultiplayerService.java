@@ -152,7 +152,7 @@ public class MultiplayerService {
 
     public long allocateWinningsToWinner(User user, long buyInAmount, int numberOfPlayers)
     {
-        long potTotal= buyInAmount * (numberOfPlayers -1);
+        long potTotal= buyInAmount * numberOfPlayers;
         user.setBalance(user.getBalance() + (potTotal));
         userRepository.merge(user);
         return potTotal;
