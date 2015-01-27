@@ -22,6 +22,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserGame> games = new ArrayList<>();
 
+    private long balance;
+
     public User(){}
 
     public User(String _username, String _password)
@@ -50,7 +52,13 @@ public class User {
     public void setUsername(String user) { this.username = user; }
     public void setPassword(String pass) { this.password = pass; }
 
+    public long getBalance() {
+        return balance;
+    }
 
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
 
     /*private String userHand;
 

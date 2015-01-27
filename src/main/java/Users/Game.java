@@ -34,6 +34,8 @@ public class Game extends BaseRepository{
 
     private String host;
 
+    private long buyIn;
+
     public void setActive(boolean a){
         active = a;
     }
@@ -73,4 +75,12 @@ public class Game extends BaseRepository{
 
     public String getHost() { return host; }
 
+
+    public long getBuyIn() {
+        return buyIn;
+    }
+
+    public void setBuyIn(long buyIn) {
+        this.buyIn = buyIn;
+    }
 }
