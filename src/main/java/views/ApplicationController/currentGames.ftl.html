@@ -1,29 +1,26 @@
 <#import "../layout/defaultLayout.ftl.html" as layout>
     <@layout.myLayout "Home page">
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<center>
-<form action="/hostGame" method="get">
-    Game name <input type = "text" name = "gamename" class="form-control" id = "gamename" required>
-    Game Buy In Amount <input type = "number" name = "gameBuyIn" class="form-control" id = "gameBuyIn" value="1000" required>
-    <input type = "Submit" class="btn btn-primary"  value = "Host a game">
-    <!--<input type = "text" name = "username" class="form-control" id = "username">-->
-</form>
+    <!DOCTYPE html>
+    <html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+    <center>
+        <form action="/hostGame" method="get">
+            Game name <input type="text" name="gamename" class="form-control" id="gamename" required>
+            Game Buy In Amount <input type="number" name="gameBuyIn" class="form-control" id="gameBuyIn" value="1000"
+                                      required>
+            <input type="Submit" class="btn btn-primary" value="Host a game">
+            <!--<input type = "text" name = "username" class="form-control" id = "username">-->
+        </form>
+
+        <#noescape>${output}</#noescape>
+        <#noescape>${joingames}</#noescape>
+    </center>
 
 
-<#noescape>${output}</#noescape>
-<#noescape>${joingames}</#noescape>
-</center>
-
-
-
-
-
-</body>
-</html>
+    </body>
+    </html>
 </@layout.myLayout>

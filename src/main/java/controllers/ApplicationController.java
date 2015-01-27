@@ -28,6 +28,7 @@ import ninja.Result;
 import ninja.Results;
 
 import ninja.params.PathParam;
+import ninja.session.FlashScope;
 import ninja.session.Session;
 
 import com.google.inject.Singleton;
@@ -114,32 +115,39 @@ public class ApplicationController {
     }
 
 
-    public Result hostGame(Context context) {
+    public Result hostGame(FlashScope flashScope, Context context) {
         long buyInAmount=Long.parseLong(context.getParameter("gameBuyIn"));
         User user = registerService.getUserByName(context.getSession().get("username")).get();
 
-        user.setBalance(user.getBalance()- buyInAmount);
-        registerService.updateUser(user);
+        if (buyInAmount<= user.getBalance()) {
+            user.setBalance(user.getBalance() - buyInAmount);
+            registerService.updateUser(user);
 
-        Game game = new Game();
-        game.setActive(true);
-        game.setGameName(context.getParameter("gamename"));
-        game.setBuyIn(buyInAmount);
-        game.setHost(context.getSession().get("username"));
-        game.setGameDate(new Date());
-        multiplayerService.gameStore(game);
+            Game game = new Game();
+            game.setActive(true);
+            game.setGameName(context.getParameter("gamename"));
+            game.setBuyIn(buyInAmount);
+            game.setHost(context.getSession().get("username"));
+            game.setGameDate(new Date());
+            multiplayerService.gameStore(game);
 
-        UserGame userGame = new UserGame();
-        userGame.setHand(pokerService.dealHand().toString());
-        userGame.setUsername(game.getHost());
-        userGame.setUser(user);
-        userGame.setGameName(game.getGameName());
-        userGame.setGame(game);
-        multiplayerService.usergameStore(userGame);
+            UserGame userGame = new UserGame();
+            userGame.setHand(pokerService.dealHand().toString());
+            userGame.setUsername(game.getHost());
+            userGame.setUser(user);
+            userGame.setGameName(game.getGameName());
+            userGame.setGame(game);
+            multiplayerService.usergameStore(userGame);
+        }
+        else {
+            flashScope.error("Insufficient funds to host game");
+        }
+
         String out = "/currentGames/";
         out += context.getSession().get("username");
 
         return Results.redirect(out);
+
     }
 
 
