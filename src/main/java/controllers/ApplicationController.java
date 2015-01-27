@@ -64,15 +64,22 @@ public class ApplicationController {
     @Inject private MultiplayerService multiplayerService;
 
 
-    public Result lobby(@PathParam("game") String id){
+    public Result lobby(@PathParam("game") String id, Context context){
         List<UserGame> userGames = multiplayerService.getAllUserGames();
         List<Game> gameList = multiplayerService.getAllGames();
         String out = "";
         String yes = "";
-        out += "<table>";
+        out += "<table class='table table-striped table-hover '>";
         for (Game game : gameList) {
             for (UserGame u : userGames) {
                 if (u.getGameName().compareTo(id) == 0 && game.getGameName().compareTo(u.getGameName()) == 0) {
+                    if (u.getGame().getActive() == false)
+                    {
+                        String o = "";
+                        o += "/game/";
+                        o += u.getGameName();
+                        return Results.redirect(o);
+                    }
                     out += "<h2>";
                     out += u.getGameName();
                     out += "</h2><br>";
@@ -83,9 +90,13 @@ public class ApplicationController {
             }
         }
         out += "</table>";
-        out += "<br><a href = '/start/";
-        out += id;
-        out += "'>Deal</a>";
+        for (Game game : gameList) {
+            if (game.getGameName().compareTo(id) == 0 && game.getHost().compareTo(context.getSession().get("username")) == 0) {
+                out += "<br><a href = '/start/";
+                out += id;
+                out += "'>Deal</a>";
+            }
+        }
         Result result = Results.html();
         result.render("output", out);
         return result;
@@ -111,19 +122,16 @@ public class ApplicationController {
         multiplayerService.usergameStore(userGame);
         String out = "/currentGames/";
         out += context.getSession().get("username");
-        //out += context.getParameter("username");
         return Results.redirect(out);
     }
 
 
     public Result startGame(@PathParam("game") String id){
         List<UserGame> userGames = multiplayerService.getAllUserGames();
-        //System.out.println("LEWE1");
         for (UserGame u : userGames){
             if (u.getGameName().compareTo(id) == 0){
                 u.getGame().setActive(false);
                 multiplayerService.gameUpdate2(u.getGame());
-                //System.out.println("LEWE2");
             }
         }
         String out = "/game/";
@@ -132,7 +140,7 @@ public class ApplicationController {
     }
 
 
-    public Result currentGames(@PathParam("user") String id){
+    public Result currentGames(@PathParam("user") String id, Context context){
         Result result = Results.html();
         String g = "";
         String out = "";
@@ -156,7 +164,7 @@ public class ApplicationController {
                 pie = userGame1.getGameName();
                 out += "<h1>";
                 out += pie;
-                out += "</h1><br><table>";
+                out += "</h1><br><table class='table table-striped table-hover '>";
             }
 
             for (UserGame userGame : userGames){
@@ -173,8 +181,6 @@ public class ApplicationController {
             if (userGame1.getGame().getHost().compareTo(id) == 0 && userGame1.getGame().getActive() == true){
                 out += "<br><a href='/lobby/";
                 out += userGame1.getGameName();
-                /*out += "/";
-                out += userGame1.getUsername();*/
                 out += "'>Go to lobby</a>";
             }
 
@@ -186,11 +192,11 @@ public class ApplicationController {
         List<UserGame> currentGames = multiplayerService.getUserGamesByUsername(id);
         List<Game> gameList = multiplayerService.getAllGames();
         String out2 = "";
-        out2 += "<h2>Join games</h2> <table>";
+        out2 += "<h2>Join games</h2> <table class='table table-striped table-hover '>";
 
-            for (UserGame current : distinctU) {
+            /*for (UserGame current : distinctU) {
                 for (Game userGame : gameList) {
-                    if (current.getGameName().compareTo(userGame.getGameName()) == 0 && current.getUsername().compareTo(id) != 0) {
+                    if (current.getGameName().compareTo(userGame.getGameName()) != 0 && userGame.getActive() == true && current.getUsername().compareTo(id) != 0 && userGame.getHost().compareTo(id) != 0) {
                         out2 += "<tr><td><a href='/joinGame/";
 
                         out2 += userGame.getGameName();
@@ -202,7 +208,23 @@ public class ApplicationController {
                         out2 += "</td></tr>";
                     }
                 }
+            }*/
+
+        for (UserGame current : currentGames){
+            for (Game userGame : gameList){
+                if (userGame.getActive() == true && userGame.getHost().compareTo(context.getSession().get("username")) != 0){
+                    out2 += "<tr><td><a href='/joinGame/";
+
+                    out2 += userGame.getGameName();
+                    out2 += "/";
+                    out2 += id;
+
+                    out2 += "'>Join game</a></td><td>";
+                    out2 += userGame.getGameName();
+                    out2 += "</td></tr>";
+                }
             }
+        }
 
 
         out2 += "</table>";
@@ -239,168 +261,8 @@ public class ApplicationController {
 
     public Result multiplayer(Context context){
         Result result = Results.html();
-
-        /*Game game = new Game();
-        game.setGameDate(new Date());
-        game.setGameName("lekkergame");
-        game.setActive(true);
-        game.setHost("Arno");
-
-        List<User> users = registerService.getAllUsers();
-
-        multiplayerService.gameStore(game);
-        pokerService.createDeck();
-
-        User user = new User();
-        user.setPassword("123");
-        user.setUsername("Arno");
-
-
-
-
-            UserGame userGame = new UserGame();
-            userGame.setUsername(user.getUsername());
-            userGame.setGameName(game.getGameName());
-            userGame.setHand(pokerService.dealHand().toString());
-
-            user.addGame(game);
-            userGame.setUser(user);
-            game.addUser(user);
-            userGame.setGame(game);
-
-        multiplayerService.usergameStore(userGame);
-
-
-
-        User user2 = new User();
-        user2.setPassword("123");
-        user2.setUsername("Chris");
-
-        UserGame userGame2 = new UserGame();
-        userGame2.setUsername(user2.getUsername());
-        userGame2.setGameName(game.getGameName());
-        userGame2.setHand(pokerService.dealHand().toString());
-
-        user2.addGame(game);
-        userGame2.setUser(user2);
-        game.addUser(user2);
-        userGame2.setGame(game);
-
-
-        multiplayerService.usergameStore(userGame2);
-
-        user2 = new User();
-        user2.setPassword("123");
-        user2.setUsername("Andre");
-
-        userGame2 = new UserGame();
-        userGame2.setUsername(user2.getUsername());
-        userGame2.setGameName(game.getGameName());
-        userGame2.setHand(pokerService.dealHand().toString());
-
-        user2.addGame(game);
-        userGame2.setUser(user2);
-        game.addUser(user2);
-        userGame2.setGame(game);
-
-
-        multiplayerService.usergameStore(userGame2);
-
-        user2 = new User();
-        user2.setPassword("123");
-        user2.setUsername("Dihan");
-
-        userGame2 = new UserGame();
-        userGame2.setUsername(user2.getUsername());
-        userGame2.setGameName(game.getGameName());
-        userGame2.setHand(pokerService.dealHand().toString());
-
-        user2.addGame(game);
-        userGame2.setUser(user2);
-        game.addUser(user2);
-        userGame2.setGame(game);
-
-
-        multiplayerService.usergameStore(userGame2);
-
-        user2 = new User();
-        user2.setPassword("123");
-        user2.setUsername("Stefan");
-
-        userGame2 = new UserGame();
-        userGame2.setUsername(user2.getUsername());
-        userGame2.setGameName(game.getGameName());
-        userGame2.setHand(pokerService.dealHand().toString());
-
-        user2.addGame(game);
-        userGame2.setUser(user2);
-        game.addUser(user2);
-        userGame2.setGame(game);
-
-
-        multiplayerService.usergameStore(userGame2);
-
-
-
-
-
-        Game game2 = new Game();
-        game2.setGameName("weg");
-        game2.setGameDate(new Date());
-        game2.setActive(true);
-        game2.setHost("Hardu");
-        multiplayerService.gameStore(game2);
-
-        user2 = new User();
-        user2.setPassword("123");
-        user2.setUsername("Hardu");
-
-        userGame2 = new UserGame();
-        userGame2.setUsername(user2.getUsername());
-        userGame2.setGameName(game2.getGameName());
-        userGame2.setHand(pokerService.dealHand().toString());
-
-        user2.addGame(game2);
-        userGame2.setUser(user2);
-        game2.addUser(user2);
-        userGame2.setGame(game2);
-
-
-        multiplayerService.usergameStore(userGame2);
-
-
-        user2.setUsername("Arno");
-        user2.setPassword("123");
-        userGame2 = new UserGame();
-        userGame2.setUsername(user2.getUsername());
-        userGame2.setGameName(game2.getGameName());
-        userGame2.setHand(pokerService.dealHand().toString());
-
-        user2.addGame(game2);
-        userGame2.setUser(user2);
-        game2.addUser(user2);
-        userGame2.setGame(game2);
-
-
-        multiplayerService.usergameStore(userGame2);*/
-
-
-
-
-
-
-
-
-
-        //List<UserGame> ugames = multiplayerService.getAllUserGames();
-
         List<UserGame> ugames = multiplayerService.getUserGamesByUsername(context.getParameter("username"));
         String o = "";
-
-
-
-
-
 
         pokerService.createDeck();
         result.render("handDeal1", pokerService.test());
@@ -408,16 +270,7 @@ public class ApplicationController {
         result.render("handDeal3", pokerService.test());
         result.render("handDeal4", pokerService.test());
         result.render("handDeal5", pokerService.test());
-        /*String u1 = "";
-        String u2 = "";
-        String u3 = "";
-        String u4 = "";
-        String u5 = "";
-        result.render("user1", users.get(0));
-        result.render("user2", users.get(1));
-        result.render("user3", users.get(2));
-        result.render("user4", users.get(3));
-        result.render("user5", users.get(4));*/
+
         result.render("winning", pokerService.evalHands());
         return result;
     }
@@ -445,7 +298,7 @@ public class ApplicationController {
         String out = "";
         String c = "";
         List<UserGame> hello = multiplayerService.getUserGamesByGameName(id);
-        //System.out.println("HIIIIIIIIIIIIIIIIIIIIII " + hello.get(0).getHand());
+
         for (UserGame userGame : hello){
             String uig = userGame.getHand();
             uig = uig.replace("(","");
@@ -491,9 +344,9 @@ public class ApplicationController {
             }
         }
 
-        //List<UserGame> u = multiplayerService.getDistinctAllUserGames();
+
         String out = "";
-    //out += "<tr>";
+
         String c="";
         for (UserGame userGame : u)
         {
@@ -535,7 +388,7 @@ public class ApplicationController {
 
         Result result = Results.html();
         String names = "";
-        //boolean hello = registerService.userGet();
+
         if (context.getParameter("usernameReg") == null && context.getParameter("passwordReg") == null)
         {
             String name = context.getParameter("username");
@@ -546,7 +399,7 @@ public class ApplicationController {
                 return result;
             }
             names = name;
-            //session.put("username", names);
+
             context.getSession().put("username", names);
 
         }

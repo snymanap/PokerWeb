@@ -50,7 +50,6 @@ public class RegisterService {
 
     private static List<User> userList = new ArrayList<>();
 
-    //Router router;
 
     @Inject private Provider<EntityManager> entityManagerProvider;
     @Transactional
@@ -78,13 +77,8 @@ public class RegisterService {
         Query q = entityManager.createQuery("SELECT x FROM User x");
 
         List<User> users = (List<User>) q.getResultList();
-        //if (users != null) {
-            //for (int i = 0; i < users.size(); i++)
-            return users;    //System.out.println(users.get(i).getUsername());
 
-
-        //return "No users";
-
+            return users;
     }
 
     @UnitOfWork
@@ -104,7 +98,6 @@ public class RegisterService {
         Query q = entityManager.createQuery("SELECT x FROM User x where x.username = :usr");
         q.setParameter("usr", _username);
         List<User> users = (List<User>) q.getResultList();
-        //System.out.println("JLKJLLKJLKJLKJLKJLKJlkjLKJLJL" + users.size());
         if (users.size() == 0)
             return false;
 

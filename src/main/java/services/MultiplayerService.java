@@ -81,10 +81,7 @@ public class MultiplayerService {
         Query q = entityManager.createQuery("SELECT x FROM Game x");
 
         List<Game> games = (List<Game>) q.getResultList();
-        /*if (games != null)
-            for (int i = 0; i < games.size(); i++)
-                System.out.println(games.get(i).getGameName());*/
-        //return "No users";
+
         return games;
     }
 
@@ -98,7 +95,7 @@ public class MultiplayerService {
         Query q = entityManager.createQuery("SELECT x FROM Game x where x.gameName = :usr");
         q.setParameter("usr", _game);
         List<Game> games = (List<Game>) q.getResultList();
-        //System.out.println("JLKJLLKJLKJLKJLKJLKJlkjLKJLJL" + users.size());
+
         if (games.size() == 0)
             return false;
 
@@ -112,12 +109,9 @@ public class MultiplayerService {
         EntityManager entityManager = entityManagerProvider.get();
 
         Query q = entityManager.createQuery("select x from UserGame x");
-        //q.setParameter("asd", "weg");
 
         List<UserGame> l = (List<UserGame>) q.getResultList();
 
-        //for (int i = 0; i < l.size(); i++)
-          //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
         return l;
     }
 
@@ -126,12 +120,9 @@ public class MultiplayerService {
         EntityManager entityManager = entityManagerProvider.get();
 
         Query q = entityManager.createQuery("select distinct UserGame.gameName from UserGame");
-        //q.setParameter("asd", "weg");
 
         List<UserGame> l = (List<UserGame>) q.getResultList();
 
-        //for (int i = 0; i < l.size(); i++)
-          //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
         return l;
     }
 
@@ -140,12 +131,9 @@ public class MultiplayerService {
         EntityManager entityManager = entityManagerProvider.get();
 
         Query q = entityManager.createQuery("select x from Game x where x.active = TRUE");
-        //q.setParameter("asd", "weg");
 
         List<Game> l = (List<Game>) q.getResultList();
 
-        //for (int i = 0; i < l.size(); i++)
-        //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
         return l;
     }
 
@@ -154,12 +142,9 @@ public class MultiplayerService {
         EntityManager entityManager = entityManagerProvider.get();
 
         Query q = entityManager.createQuery("select x from Game x where x.active = FALSE");
-        //q.setParameter("asd", "weg");
 
         List<Game> l = (List<Game>) q.getResultList();
 
-        //for (int i = 0; i < l.size(); i++)
-        //  System.out.println("User " + l.get(i).getUsername() + " Game " + l.get(i).getGameName());
         return l;
     }
 

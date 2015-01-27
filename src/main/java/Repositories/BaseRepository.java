@@ -19,7 +19,6 @@ public class BaseRepository<T> {
 
     @Transactional
     public void persist(T entity){
-        //getEntityManager()
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("prod_unit");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 

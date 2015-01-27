@@ -16,7 +16,6 @@ import java.util.List;
 @Singleton
 public class PokerService
 {
-    //List<Card> hand;
     List<Card> deck;
 
     public String getName()
@@ -35,7 +34,6 @@ public class PokerService
                 deck.add(new Card(rank,suit));
             }
         }
-        //System.out.println("DECK SIZE " + deck.size());
         shuffle();
         return deck;
     }
@@ -43,10 +41,6 @@ public class PokerService
     public void shuffle()
     {
         Collections.shuffle(deck);
-
-            //System.out.println(deck.toString());
-
-        //return deck;
     }
 
     private List<Card> hand;
@@ -60,7 +54,6 @@ public class PokerService
     {
 
         if ( deck == null || deck.size() < 5) {
-            //System.out.println("JFJFJFJJFJFJFJFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
             deck = createDeck();
         }
 
@@ -72,7 +65,6 @@ public class PokerService
             hand.add(deck.get(i));
             deck.remove(i);
         }
-        //System.out.println("DECK SIZE " + deck.size());
 
         String a = hand.get(0).toString();
         String b = hand.get(1).toString();
@@ -86,7 +78,6 @@ public class PokerService
 
     public String test()
     {
-        //createDeck();
         Hand newHand = dealHand();
         handList.add(newHand);
         return evaluate(newHand);
@@ -111,8 +102,6 @@ public class PokerService
         else if (HandEvaluator.isStraightFlush(hand))
             return "Straight flush";
         else return "High card";
-
-        //return " ";
     }
 
     public String evalHands()
