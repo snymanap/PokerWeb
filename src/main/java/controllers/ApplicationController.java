@@ -203,37 +203,42 @@ public class ApplicationController {
         String out2 = "";
         out2 += "<h2>Join games</h2> <table class='table table-striped table-hover '>";
 
-            for (UserGame current : distinctU) {
-                for (Game userGame : gameList) {
-                    if (current.getGameName().compareTo(userGame.getGameName()) != 0 && userGame.getActive() == true && current.getUsername().compareTo(id) != 0 && userGame.getHost().compareTo(id) != 0) {
-                        out2 += "<tr><td><a href='/joinGame/";
+        List<Game> gamesWhereUserActive = new ArrayList<>();
+        List<Game> gamesWhereUserNotActive = new ArrayList<>();
+        System.out.println("USERNAME " + context.getSession().get("username"));
+        for (UserGame u : distinctU){
+            if (u.getUsername().compareTo(context.getSession().get("username")) == 0){
+                gamesWhereUserActive.add(u.getGame());
+            }
+        }
 
-                        out2 += userGame.getGameName();
-                        out2 += "/";
-                        out2 += id;
-
-                        out2 += "'>Join game</a></td><td>";
-                        out2 += userGame.getGameName();
-                        out2 += "</td></tr>";
-                    }
+        boolean found = false;
+        for (Game game : gameList){
+            System.out.println("YOOOOOOOOOO " + game.getGameName() );
+            for (Game game1 : gamesWhereUserActive){
+                if (game.getGameName().compareTo(game1.getGameName()) == 0){
+                    System.out.println("HEYYYYYYYYYYYYY " + game1.getGameName());
+                    found = true;
                 }
             }
-
-        /*for (UserGame current : currentGames){
-            for (Game userGame : gameList){
-                if (userGame.getActive() == true && userGame.getHost().compareTo(context.getSession().get("username")) != 0){
-                    out2 += "<tr><td><a href='/joinGame/";
-
-                    out2 += userGame.getGameName();
-                    out2 += "/";
-                    out2 += id;
-
-                    out2 += "'>Join game</a></td><td>";
-                    out2 += userGame.getGameName();
-                    out2 += "</td></tr>";
-                }
+            if (!found){
+                gamesWhereUserNotActive.add(game);
             }
-        }*/
+            found = false;
+        }
+
+        for (Game game : gamesWhereUserNotActive){
+            out2 += "<tr><td><a href='/joinGame/";
+
+            out2 += game.getGameName();
+            out2 += "/";
+            out2 += id;
+
+            out2 += "'>Join game</a></td><td>";
+            out2 += game.getGameName();
+            out2 += "</td></tr>";
+        }
+
 
 
         out2 += "</table>";

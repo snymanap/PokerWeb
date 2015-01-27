@@ -169,4 +169,9 @@ public class MultiplayerService {
 
         return l;
     }
+
+    /*@UnitOfWork
+    public List<Game> getUserGamesWhereNot(String _user){
+
+    }*/
 }
